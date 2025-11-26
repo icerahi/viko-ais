@@ -12,3 +12,103 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  login     String   @unique
+  password  String
+  email     String?
+  role      UserRole @default(STUDENT)
+  createdAt DateTime @default(now())
+
+  student Student?
+  teacher Teacher?
+
+  @@map("users")
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  groupId   String?
+  createdAt DateTime @default(now())
+
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id])
+  grades Grade[]
+
+  @@map("students")
+}
+
+model Teacher {
+  id        String @id @default(uuid())
+  firstName String
+  lastName  String
+  userId    String @unique
+  user      User   @relation(fields: [userId], references: [id])
+
+  createdAt       DateTime         @default(now())
+  teacherSubjects TeacherSubject[]
+
+  @@map("teachers")
+}
+
+model Group {
+  id   String @id @default(uuid())
+  name String
+
+  groupSubjects GroupSubject[]
+
+  @@map("groups")
+}
+
+model Subject {
+  id              String           @id @default(uuid())
+  name            String
+  grades          Grade[]
+  teacherSubjects TeacherSubject[]
+  groupSubjects   GroupSubject[]
+
+  @@map("subjects")
+}
+
+model Grade {
+  id        String   @id @default(uuid())
+  studentId String
+  subjectId String
+  value     Float
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
+
+model TeacherSubject {
+  id        String @id @default(ulid())
+  teacherId String
+  subjectId String
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@unique([teacherId, subjectId])
+  @@map("teacher_subjects")
+}
+
+model GroupSubject {
+  id        String @id @default(uuid())
+  groupId   String
+  subjectId String
+
+  group   Group   @relation(fields: [groupId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@map("group_subjects")
+}
