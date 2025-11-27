@@ -20,99 +20,79 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
   login     String   @unique
   password  String
-  email     String?
   role      UserRole @default(STUDENT)
-  createdAt DateTime @default(now())
 
   student Student?
   teacher Teacher?
-
-  @@map("users")
+  admin   Admin?
 }
 
 model Student {
-  id        String  @id @default(uuid())
-  firstName String
-  lastName  String
-  groupId   String?
-  group     Group?  @relation(fields: [groupId], references: [id])
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  grades Grade[]
-
-  @@map("students")
+  id      Int     @id @default(autoincrement())
+  userId  Int     @unique
+  groupId Int
+  user    User    @relation(fields: [userId], references: [id])
+  grades  Grade[]
 }
 
 model Teacher {
-  id        String @id @default(uuid())
-  firstName String
-  lastName  String
-  userId    String @unique
-  user      User   @relation(fields: [userId], references: [id])
-
-  createdAt       DateTime         @default(now())
+  id              Int              @id @default(autoincrement())
+  userId          Int              @unique
+  user            User             @relation(fields: [userId], references: [id])
+  subjects        Subject[]
   teacherSubjects TeacherSubject[]
+}
 
-  @@map("teachers")
+model Admin {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 }
 
 model Group {
-  id   String @id @default(uuid())
-  name String
-
+  id            Int            @id @default(autoincrement())
+  name          String
   groupSubjects GroupSubject[]
-  students      Student[]
-
-  @@map("groups")
 }
 
 model Subject {
-  id              String           @id @default(uuid())
+  id              Int              @id @default(autoincrement())
   name            String
+  teacherId       Int
+  teacher         Teacher          @relation(fields: [teacherId], references: [id])
   grades          Grade[]
   teacherSubjects TeacherSubject[]
   groupSubjects   GroupSubject[]
-
-  @@map("subjects")
 }
 
 model Grade {
-  id        String   @id @default(uuid())
-  studentId String
-  subjectId String
+  int       Int     @id @default(autoincrement())
+  studentId Int
+  subjectId Int
   value     Float
-  createdAt DateTime @default(now())
-
-  student Student @relation(fields: [studentId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id])
 }
 
 model TeacherSubject {
-  id        String @id @default(ulid())
-  teacherId String
-  subjectId String
+  id        Int @id @default(autoincrement())
+  teacherId Int
+  subjectId Int
 
   teacher Teacher @relation(fields: [teacherId], references: [id])
   subject Subject @relation(fields: [subjectId], references: [id])
-
-  @@unique([teacherId, subjectId])
-  @@map("teacher_subjects")
 }
 
 model GroupSubject {
-  id        String @id @default(uuid())
-  groupId   String
-  subjectId String
+  id        Int @id @default(autoincrement())
+  groupId   Int
+  subjectId Int
 
   group   Group   @relation(fields: [groupId], references: [id])
   subject Subject @relation(fields: [subjectId], references: [id])
-
-  @@map("group_subjects")
 }

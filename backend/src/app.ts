@@ -1,5 +1,6 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
+import router from "./core/routes";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import notFound from "./middlewares/notFound";
 
@@ -15,6 +16,8 @@ app.get("/", (req: Request, res: Response) => {
     timeStamp: new Date().toISOString(),
   });
 });
+
+app.use("/api/v1", router);
 
 app.use(globalErrorHandler);
 app.use(notFound);
