@@ -12,7 +12,13 @@ interface IUserRepository {
 
 export class UserRepository implements IUserRepository {
   private mapToUser(prismaUser: any): User {
-    return new User(prismaUser.firstName, prismaUser.lastName, prismaUser.role);
+    return new User(
+      prismaUser.firstName,
+      prismaUser.lastName,
+      prismaUser.role,
+      prismaUser.login,
+      prismaUser.password
+    );
   }
   async create(user: User) {
     let counter = 0;

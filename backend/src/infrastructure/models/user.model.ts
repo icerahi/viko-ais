@@ -7,12 +7,18 @@ export class User {
   private password: string;
   private role: UserRole;
 
-  constructor(firstName: string, lastName: string, role: UserRole) {
+  constructor(
+    firstName: string,
+    lastName: string,
+    role: UserRole,
+    login?: string,
+    password?: string
+  ) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.role = role;
-    this.login = firstName.toLowerCase();
-    this.password = lastName.toLowerCase();
+    this.login = login || firstName.toLowerCase();
+    this.password = password || lastName.toLowerCase();
   }
 
   getFirstName() {
