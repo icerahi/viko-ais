@@ -33,11 +33,13 @@ model User {
 }
 
 model Student {
-  id      Int     @id @default(autoincrement())
-  userId  Int     @unique
-  groupId Int
-  user    User    @relation(fields: [userId], references: [id])
-  grades  Grade[]
+  id      Int    @id @default(autoincrement())
+  userId  Int    @unique
+  groupId Int?
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group? @relation(fields: [groupId], references: [id])
+
+  grades Grade[]
 }
 
 model Teacher {
@@ -58,6 +60,7 @@ model Group {
   id            Int            @id @default(autoincrement())
   name          String
   groupSubjects GroupSubject[]
+  students      Student[]
 }
 
 model Subject {

@@ -46,8 +46,8 @@ const globalErrorHandler = (
 
   res.status(statusCode).json({
     success,
-    message,
-    error,
+    message: message,
+    error: error,
   });
 };
 

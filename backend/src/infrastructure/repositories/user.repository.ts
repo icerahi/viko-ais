@@ -1,4 +1,5 @@
 import { prisma } from "../../config/db";
+import { UserRole } from "../../generated/prisma/enums";
 import { User } from "../models/user.model";
 
 interface IUserRepository {
@@ -26,31 +27,39 @@ export class UserRepository implements IUserRepository {
       user.setLogin(`${user.getFirstName()}${counter++}`);
     }
 
-    const newStudent = await prisma.user.create({
-      data: {
-        firstName: user.getFirstName(),
-        lastName: user.getLastName(),
-        login: user.getLogin(),
-        password: user.getPassword(),
-        role: user.getRole(),
-      },
+    const newUser = await prisma.$transaction(async (tx) => {
+      const u = await tx.user.create({
+        data: {
+          firstName: user.getFirstName(),
+          lastName: user.getLastName(),
+          login: user.getLogin(),
+          password: user.getPassword(),
+          role: user.getRole(),
+        },
+      });
+
+      if (u.role === UserRole.STUDENT) {
+        await tx.student.create({ data: { userId: u.id } });
+      }
+
+      return u;
     });
 
-    return this.mapToUser(newStudent);
+    return this.mapToUser(newUser);
   }
 
   async findById(id: number): Promise<User | null> {
-    const result = await prisma.user.findUnique({ where: { id } });
-    if (!result) return null;
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) return null;
 
-    return result as unknown as User;
+    return this.mapToUser(user);
   }
 
   async findByLogin(login: string) {
-    const result = await prisma.user.findUnique({ where: { login } });
-    if (!result) return null;
+    const user = await prisma.user.findUnique({ where: { login } });
+    if (!user) return null;
 
-    return result as unknown as User;
+    return this.mapToUser(user);
   }
 
   //   async findAll() {
