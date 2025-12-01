@@ -33,14 +33,20 @@ async function seedSuperAdmin() {
 
   console.log("Super admin creating.......");
 
-  const superAdmin = await prisma.user.create({
-    data: {
-      firstName: "Super",
-      lastName: "Admin",
-      login: process.env.SUPER_ADMIN_LOGIN!,
-      password: process.env.SUPER_ADMIN_PASSWORD!,
-      role: UserRole.ADMIN,
-    },
+  const superAdmin = await prisma.$transaction(async (tx) => {
+    const u = await tx.user.create({
+      data: {
+        firstName: "Super",
+        lastName: "Admin",
+        login: process.env.SUPER_ADMIN_LOGIN!,
+        password: process.env.SUPER_ADMIN_PASSWORD!,
+        role: UserRole.ADMIN,
+      },
+    });
+
+    await tx.admin.create({ data: { userId: u.id } });
+
+    return u;
   });
   console.log(superAdmin);
 

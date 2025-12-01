@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
+import { ZodError } from "zod";
 import { Prisma } from "../generated/prisma/client";
 
 const globalErrorHandler = (
@@ -41,6 +42,10 @@ const globalErrorHandler = (
   } else if (err instanceof Prisma.PrismaClientInitializationError) {
     message = "Prisma client failed to initialize!";
     error = err.message;
+    statusCode = httpStatus.BAD_REQUEST;
+  } else if (err instanceof ZodError) {
+    message = "Input Validation failed!";
+    error = JSON.parse(err.message);
     statusCode = httpStatus.BAD_REQUEST;
   }
 

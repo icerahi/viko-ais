@@ -3,10 +3,11 @@ import { UserRole } from "../../generated/prisma/enums";
 import { User } from "../models/user.model";
 
 interface IUserRepository {
-  create(user: User): Promise<User>;
+  create(user: User): Promise<User | null>;
   findById(id: number): Promise<User | null>;
   findByLogin(login: string): Promise<User | null>;
-  //     findAll(): Promise<Student[]>;
+  findAll(filter: Record<string, any>): Promise<User[]>;
+  delete(id: number): Promise<void>;
   //   update(id: number, student: Partial<Student>): Promise<Student>;
   //   delete(id: number): Promise<void>;
 }
@@ -21,7 +22,9 @@ export class UserRepository implements IUserRepository {
       prismaUser.password
     );
   }
+
   async create(user: User) {
+    //generating unique login
     let counter = 0;
     while (await this.findByLogin(user.getLogin())) {
       user.setLogin(`${user.getFirstName()}${counter++}`);
@@ -40,6 +43,14 @@ export class UserRepository implements IUserRepository {
 
       if (u.role === UserRole.STUDENT) {
         await tx.student.create({ data: { userId: u.id } });
+      }
+
+      if (u.role === UserRole.TEACHER) {
+        await tx.teacher.create({ data: { userId: u.id } });
+      }
+
+      if (u.role === UserRole.ADMIN) {
+        await tx.admin.create({ data: { userId: u.id } });
       }
 
       return u;
@@ -62,15 +73,18 @@ export class UserRepository implements IUserRepository {
     return this.mapToUser(user);
   }
 
-  //   async findAll() {
-  //     return await prisma.student.findMany();
-  //   }
+  async findAll(filter: Record<string, any>) {
+    const allUser = await prisma.user.findMany({ where: filter });
+    return allUser as unknown as User[];
+  }
+
+  async delete(id: number) {
+    await prisma.user.delete({ where: { id } });
+
+    return;
+  }
 
   //   async update(id: number, student: Partial<Student>) {
   //     return await prisma.student.update({ where: { id }, data: { ...student } });
-  //   }
-
-  //   async delete(id: number) {
-  //     return await prisma.student.delete({ where: { id } });
   //   }
 }

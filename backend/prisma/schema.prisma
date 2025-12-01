@@ -36,41 +36,40 @@ model Student {
   id      Int    @id @default(autoincrement())
   userId  Int    @unique
   groupId Int?
-  user    User   @relation(fields: [userId], references: [id])
-  group   Group? @relation(fields: [groupId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: SetNull)
 
   grades Grade[]
 }
 
 model Teacher {
-  id              Int              @id @default(autoincrement())
-  userId          Int              @unique
-  user            User             @relation(fields: [userId], references: [id])
-  subjects        Subject[]
-  teacherSubjects TeacherSubject[]
+  id       Int       @id @default(autoincrement())
+  userId   Int       @unique
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjects Subject[]
 }
 
 model Admin {
   id     Int  @id @default(autoincrement())
   userId Int  @unique
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Group {
-  id            Int            @id @default(autoincrement())
-  name          String
-  groupSubjects GroupSubject[]
-  students      Student[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  subjectGroup SubjectGroup[]
+  students     Student[]
 }
 
 model Subject {
-  id              Int              @id @default(autoincrement())
-  name            String
-  teacherId       Int
-  teacher         Teacher          @relation(fields: [teacherId], references: [id])
-  grades          Grade[]
-  teacherSubjects TeacherSubject[]
-  groupSubjects   GroupSubject[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [userId], onDelete: SetNull)
+  grades    Grade[]
+
+  subjectGroups SubjectGroup[]
 }
 
 model Grade {
@@ -78,24 +77,17 @@ model Grade {
   studentId Int
   subjectId Int
   value     Float
-  student   Student @relation(fields: [studentId], references: [id])
-  subject   Subject @relation(fields: [subjectId], references: [id])
+  student   Student @relation(fields: [studentId], references: [userId], onDelete: Cascade)
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }
 
-model TeacherSubject {
-  id        Int @id @default(autoincrement())
-  teacherId Int
-  subjectId Int
-
-  teacher Teacher @relation(fields: [teacherId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
-}
-
-model GroupSubject {
+model SubjectGroup {
   id        Int @id @default(autoincrement())
   groupId   Int
   subjectId Int
 
-  group   Group   @relation(fields: [groupId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
+  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, subjectId])
 }

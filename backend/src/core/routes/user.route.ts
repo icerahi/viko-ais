@@ -16,10 +16,13 @@ const userController = new UserController(userService);
 const userAPISchema = new UserAPISchema();
 
 router.post(
-  "/create-student",
+  "/",
   Auth(UserRole.ADMIN),
-  validateRequest(userAPISchema.studentCreateAPISchema),
-  userController.createStudent
+  validateRequest(userAPISchema.userCreateAPISchema),
+  userController.create
 );
+
+router.get("/", Auth(UserRole.ADMIN), userController.getAllUsers);
+router.delete("/:id", Auth(UserRole.ADMIN), userController.delete);
 
 export const userRoutes = router;
