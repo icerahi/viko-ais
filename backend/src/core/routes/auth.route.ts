@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authAPISchema } from "../../infrastructure/apiSchemas/auth.validation";
+import { authAPISchema } from "../../infrastructure/apiValidations/auth.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { AuthController } from "../controllers/auth.controller";
 import { AuthService } from "../services/auth.service";

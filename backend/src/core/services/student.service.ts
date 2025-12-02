@@ -10,4 +10,8 @@ export class StudentService {
   async allStudents() {
     return await this.studentRepo.allStudents();
   }
+
+  async teacherStudents(teacherId: number, subjectId: number) {
+    return await this.studentRepo.teacherStudents(teacherId, subjectId);
+  }
 }

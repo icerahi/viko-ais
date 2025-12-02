@@ -17,7 +17,7 @@ export class GroupService {
     return await this.groupRepo.delete(id);
   }
 
-  async assignSubject(payload: { groupId: number; subjectId: number }) {
-    return await this.groupRepo.assignSubject(payload);
+  async assignSubject(groupId:number, subjectId:number) {
+    return await this.groupRepo.assignSubject(groupId,subjectId);
   }
 }

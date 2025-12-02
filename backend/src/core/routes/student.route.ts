@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserRole } from "../../generated/prisma/enums";
-import { assignGroupAPISchema } from "../../infrastructure/apiSchemas/student.validation";
+import { assignGroupAPISchema } from "../../infrastructure/apiValidations/student.validation";
 import { StudentRepository } from "../../infrastructure/repositories/student.repository";
 import { Auth } from "../../middlewares/AuthMiddleware";
 import { validateRequest } from "../../middlewares/validateRequest";
@@ -14,11 +14,16 @@ const studentService = new StudentService(studentRepo);
 const studentController = new StudentController(studentService);
 
 router.patch(
-  "/:userId/assignGroup",
+  "/:userId/assign-group",
   Auth(UserRole.ADMIN),
   validateRequest(assignGroupAPISchema),
   studentController.assignGroup
 );
 router.get("/", Auth(UserRole.ADMIN), studentController.allStudents);
+router.get(
+  "/:subjectId/my-students",
+  Auth(UserRole.TEACHER),
+  studentController.teacherStudents
+);
 
 export const studentRoutes = router;

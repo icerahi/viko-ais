@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserRole } from "../../generated/prisma/enums";
-import { UserAPISchema } from "../../infrastructure/apiSchemas/user.validation";
+import { UserAPISchema } from "../../infrastructure/apiValidations/user.validation";
 import { UserRepository } from "../../infrastructure/repositories/user.repository";
 import { Auth } from "../../middlewares/AuthMiddleware";
 import { validateRequest } from "../../middlewares/validateRequest";
@@ -16,7 +16,7 @@ const userController = new UserController(userService);
 const userAPISchema = new UserAPISchema();
 
 router.post(
-  "/",
+  "/create",
   Auth(UserRole.ADMIN),
   validateRequest(userAPISchema.userCreateAPISchema),
   userController.create

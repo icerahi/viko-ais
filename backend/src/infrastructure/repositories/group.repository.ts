@@ -33,10 +33,10 @@ export class GroupRepository implements IGroupRepository {
     return;
   }
 
-  async assignSubject(payload: { groupId: number; subjectId: number }) {
+  async assignSubject(groupId: number, subjectId: number) {
     const group = await prisma.group.findUnique({
       where: {
-        id: payload.groupId,
+        id: groupId,
       },
     });
 
@@ -44,7 +44,7 @@ export class GroupRepository implements IGroupRepository {
       throw new ApiError(404, "Group Id does not exists");
     }
     const subject = await prisma.subject.findUnique({
-      where: { id: payload.subjectId },
+      where: { id: subjectId },
     });
     if (!subject) {
       throw new ApiError(404, "Subject Id does not exists");
@@ -52,8 +52,8 @@ export class GroupRepository implements IGroupRepository {
 
     const result = await prisma.subjectGroup.create({
       data: {
-        groupId: payload.groupId,
-        subjectId: payload.subjectId,
+        groupId: groupId,
+        subjectId: subjectId,
       },
     });
 

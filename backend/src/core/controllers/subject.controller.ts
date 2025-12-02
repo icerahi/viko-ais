@@ -53,4 +53,27 @@ export class SubjectController {
       data: result,
     });
   });
+
+  getTeacherSubjects = catchAsync(async (req: Request, res: Response) => {
+    const result = await this.subjectService.getTeacherSubjects(req.user.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: status.OK,
+      message: "Teacher Subjects retreived successfully",
+      data: result,
+    });
+  });
+
+  mySubjects = catchAsync(async (req: Request, res: Response) => {
+    const studentId = req.user.id;
+    const result = await this.subjectService.mySubjects(studentId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: status.OK,
+      message: "Subjects retrieve successfully",
+      data: result,
+    });
+  });
 }

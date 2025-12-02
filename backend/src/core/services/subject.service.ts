@@ -20,4 +20,11 @@ export class SubjectService {
   async update(id: number, payload: any) {
     return await this.subjectRepo.update(id, payload);
   }
+  async getTeacherSubjects(teacherId: number) {
+    return await this.subjectRepo.getTeacherSubjects(teacherId);
+  }
+
+  async mySubjects(studentId: number) {
+    return await this.subjectRepo.mySubjects(studentId);
+  }
 }

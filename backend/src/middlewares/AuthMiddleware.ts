@@ -9,7 +9,6 @@ export const Auth =
     try {
       const accessToken =
         req.cookies?.accessToken || req.headers?.authorization;
-      console.log(req.cookies);
 
       console.log(accessToken);
       if (!accessToken) {

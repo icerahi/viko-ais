@@ -73,12 +73,14 @@ model Subject {
 }
 
 model Grade {
-  int       Int     @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   studentId Int
   subjectId Int
   value     Float
   student   Student @relation(fields: [studentId], references: [userId], onDelete: Cascade)
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
 }
 
 model SubjectGroup {

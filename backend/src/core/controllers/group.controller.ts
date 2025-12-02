@@ -41,7 +41,9 @@ export class GroupController {
   });
 
   assignSubject = catchAsync(async (req: Request, res: Response) => {
-    await this.groupService.assignSubject(req.body);
+    const groupId = Number(req.params.groupId);
+    const subjectId = req.body.subjectId;
+    await this.groupService.assignSubject(groupId, subjectId);
 
     sendResponse(res, {
       success: true,

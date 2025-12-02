@@ -1,5 +1,6 @@
 import status from "http-status";
 import { prisma } from "../../config/db";
+import { UserRole } from "../../generated/prisma/enums";
 import ApiError from "../../utils/ApiError";
 import { Subject } from "../models/subject.model";
 
@@ -8,6 +9,8 @@ interface ISubjectRepository {
   getAllSubjects(): Promise<Subject[]>;
   delete(id: number): Promise<void>;
   update(id: number, payload: any): Promise<Subject>;
+
+  getTeacherSubjects(teacherId: number): Promise<any>;
 }
 
 export class SubjectRepository implements ISubjectRepository {
@@ -26,11 +29,14 @@ export class SubjectRepository implements ISubjectRepository {
   async getAllSubjects() {
     const subjects = await prisma.subject.findMany({
       select: {
+        id: true,
         name: true,
         subjectGroups: true,
         teacher: {
           select: {
-            user: { select: { firstName: true, lastName: true, role: true } },
+            user: {
+              select: { id: true, firstName: true, lastName: true, role: true },
+            },
           },
         },
       },
@@ -50,12 +56,43 @@ export class SubjectRepository implements ISubjectRepository {
       throw new ApiError(status.NOT_FOUND, "Subject not found!");
     }
 
+    if (payload.teacherId) {
+      const teacher = await prisma.user.findUnique({
+        where: { id: payload.teacherId },
+      });
+      if (teacher && teacher.role !== UserRole.TEACHER) {
+        throw new ApiError(
+          status.BAD_REQUEST,
+          `Can't update teacher with role ${teacher?.role}`
+        );
+      }
+    }
     const updatedSubject = await prisma.subject.update({
       where: { id },
       data: { ...payload },
     });
 
-    console.log({ updatedSubject });
     return this.mapToSubject(updatedSubject);
+  }
+
+  async getTeacherSubjects(teacherId: number) {
+    return await prisma.subject.findMany({ where: { teacherId } });
+  }
+
+  async mySubjects(studentId: number) {
+    const student = await prisma.student.findUnique({
+      where: { userId: studentId },
+    });
+
+    if (!student?.groupId) {
+      throw new ApiError(status.NO_CONTENT, "You do not have any subjects");
+    }
+
+    const subjects = await prisma.subjectGroup.findMany({
+      where: { groupId: student?.groupId },
+      select: { subject: true },
+    });
+
+    return subjects;
   }
 }

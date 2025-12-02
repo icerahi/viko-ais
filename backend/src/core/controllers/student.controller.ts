@@ -31,4 +31,20 @@ export class StudentController {
       data: result,
     });
   });
+
+  teacherStudents = catchAsync(async (req: Request, res: Response) => {
+    const teacherId = req.user.id;
+    const subjectId = Number(req.params.subjectId);
+    const result = await this.studentService.teacherStudents(
+      teacherId,
+      subjectId
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: status.OK,
+      message: "Students retrieve successfully",
+      data: result,
+    });
+  });
 }

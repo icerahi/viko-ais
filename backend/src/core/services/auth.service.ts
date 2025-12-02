@@ -13,14 +13,15 @@ export class AuthService {
       throw new ApiError(status.NOT_FOUND, "User does not exists");
     }
 
-    const matchPassword = userExists.getPassword() === payload.password;
+    const matchPassword = userExists.password === payload.password;
     if (!matchPassword) {
       throw new ApiError(status.BAD_REQUEST, "Incorrect Password");
     }
 
     const jwtPayload = {
-      login: userExists.getLogin(),
-      role: userExists.getRole(),
+      id: userExists.id,
+      login: userExists.login,
+      role: userExists.role,
     };
 
     const accessToken = jwt.sign(jwtPayload, process.env.JWT_SECRET!, {

@@ -11,9 +11,19 @@ const subjectRepo = new SubjectRepository();
 const subjectService = new SubjectService(subjectRepo);
 const subjectController = new SubjectController(subjectService);
 
-router.post("/", Auth(UserRole.ADMIN), subjectController.create);
+router.post("/create", Auth(UserRole.ADMIN), subjectController.create);
 router.get("/", Auth(UserRole.ADMIN), subjectController.getAllSubjects);
 router.delete("/:id", Auth(UserRole.ADMIN), subjectController.delete);
 router.patch("/:id", Auth(UserRole.ADMIN), subjectController.update);
+router.get(
+  "/teacher-subjects",
+  Auth(UserRole.TEACHER),
+  subjectController.getTeacherSubjects
+);
 
+router.get(
+  "/my-subjects",
+  Auth(UserRole.STUDENT),
+  subjectController.mySubjects
+);
 export const subjectRoutes = router;
