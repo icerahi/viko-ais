@@ -26,7 +26,7 @@ export default function TeacherLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-blue-900 text-white p-4 flex justify-between items-center">
+      <header className="bg-secondary text-secondary-foreground p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">
           <Link href={"/teacher"}>Teacher Dashboard</Link>{" "}
         </h1>
@@ -37,7 +37,7 @@ export default function TeacherLayout({
           </Button>
         </div>
       </header>
-      <main className="flex-1 p-6 bg-gray-50">{children}</main>
+      <main className="flex-1 p-6 bg-muted/20">{children}</main>
     </div>
   );
 }

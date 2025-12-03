@@ -1,3 +1,4 @@
+import status from "http-status";
 import { prisma } from "../../config/db";
 import ApiError from "../../utils/ApiError";
 import { Group } from "../models/group.model";
@@ -48,6 +49,13 @@ export class GroupRepository implements IGroupRepository {
     });
     if (!subject) {
       throw new ApiError(404, "Subject Id does not exists");
+    }
+
+    const exists = await prisma.subjectGroup.findFirst({
+      where: { groupId: group.id, subjectId: subjectId },
+    });
+    if (exists) {
+      throw new ApiError(status.BAD_REQUEST, "Record already exists!");
     }
 
     const result = await prisma.subjectGroup.create({

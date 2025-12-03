@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import {
-  BookOpen,
-  GraduationCap,
-  Layers,
-  LayoutDashboard,
-  Users,
+    BookOpen,
+    GraduationCap,
+    Layers,
+    LayoutDashboard,
+    Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -44,12 +44,12 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
-        <div className="p-4 border-b border-slate-800">
+      <aside className="w-64 bg-sidebar text-sidebar-foreground flex flex-col">
+        <div className="p-4 border-b border-sidebar-border">
           <h1 className="text-xl font-bold">
             <Link href={"/admin"}>Admin Panel</Link>
           </h1>
-          <p className="text-sm text-slate-400">Welcome, {user.login}</p>
+          <p className="text-sm text-sidebar-foreground/70">Welcome, {user.login}</p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
@@ -59,8 +59,8 @@ export default function AdminLayout({
               className={cn(
                 "flex items-center gap-3 px-4 py-2 rounded-md transition-colors",
                 pathname === item.href
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
             >
               <item.icon className="w-5 h-5" />
@@ -68,7 +68,7 @@ export default function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-sidebar-border">
           <Button variant="destructive" className="w-full" onClick={logout}>
             Logout
           </Button>
@@ -76,7 +76,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-50 overflow-auto">
+      <main className="flex-1 bg-muted/20 overflow-auto">
         <div className="p-8">{children}</div>
       </main>
     </div>
