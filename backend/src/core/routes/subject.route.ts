@@ -17,7 +17,7 @@ router.delete("/:id", Auth(UserRole.ADMIN), subjectController.delete);
 router.patch("/:id", Auth(UserRole.ADMIN), subjectController.update);
 router.get(
   "/teacher-subjects",
-  Auth(UserRole.TEACHER),
+  Auth(UserRole.TEACHER, UserRole.ADMIN),
   subjectController.getTeacherSubjects
 );
 

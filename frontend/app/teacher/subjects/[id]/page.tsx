@@ -35,7 +35,7 @@ export default function SubjectGradesPage({
           TeacherService.getStudentsBySubject(subjectId),
           TeacherService.getGradesBySubject(subjectId),
         ]);
-        setStudents(studentsData);
+        setStudents(studentsData[0].students || []);
         setGrades(gradesData);
       } catch (error) {
         console.error("Failed to fetch data", error);
@@ -111,32 +111,36 @@ export default function SubjectGradesPage({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map(({ students }: any, index) => (
-              <TableRow key={index}>
-                <TableCell>{students[0].userId}</TableCell>
-                <TableCell>
-                  {students[0].user.firstName} {students[0].user.lastName}
-                </TableCell>
-                <TableCell>
-                  <Input
-                    type="number"
-                    className="w-24"
-                    value={getGradeValue(students[0].userId)}
-                    onChange={(e) =>
-                      handleGradeChange(students[0].userId, e.target.value)
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <Button
-                    size="sm"
-                    onClick={() => handleSaveGrade(students[0].userId)}
-                  >
-                    Save
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {students.length !== 0 ? (
+              students.map((student, index) => (
+                <TableRow key={student.userId ?? index}>
+                  <TableCell>{student.userId}</TableCell>
+                  <TableCell>
+                    {student.user?.firstName} {student.user?.lastName}
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      className="w-24"
+                      value={getGradeValue(student.userId)}
+                      onChange={(e) =>
+                        handleGradeChange(student.userId, e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      onClick={() => handleSaveGrade(student.userId)}
+                    >
+                      Save
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <p>No student enrolled yet!</p>
+            )}
           </TableBody>
         </Table>
       </div>
