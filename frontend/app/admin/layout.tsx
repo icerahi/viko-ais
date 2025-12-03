@@ -35,6 +35,7 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/admins", label: "Admins", icon: Users },
     { href: "/admin/students", label: "Students", icon: GraduationCap },
     { href: "/admin/teachers", label: "Teachers", icon: Users },
     { href: "/admin/groups", label: "Groups", icon: Layers },

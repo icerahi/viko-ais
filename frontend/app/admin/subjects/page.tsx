@@ -35,6 +35,7 @@ const subjectSchema = z.object({
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [teachers, setTeachers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -120,6 +121,10 @@ export default function SubjectsPage() {
       }
   }
 
+  const filteredSubjects = subjects.filter((subject) =>
+    subject.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -181,6 +186,15 @@ export default function SubjectsPage() {
         </Dialog>
       </div>
 
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Search subjects..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
+
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -192,7 +206,7 @@ export default function SubjectsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {subjects.map((subject) => (
+            {filteredSubjects.map((subject) => (
               <TableRow key={subject.id}>
                 <TableCell>{subject.id}</TableCell>
                 <TableCell>{subject.name}</TableCell>

@@ -3,36 +3,36 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { AdminService, Group, Subject } from "@/services/admin.service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,6 +48,7 @@ const groupSchema = z.object({
 
 export default function GroupsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -164,6 +165,10 @@ export default function GroupsPage() {
   };
 
   console.log({ groups });
+  const filteredGroups = groups.filter((group) =>
+    group.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -206,6 +211,15 @@ export default function GroupsPage() {
         </Dialog>
       </div>
 
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Search groups..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
+
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -217,7 +231,7 @@ export default function GroupsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {groups.map((group) => (
+            {filteredGroups.map((group) => (
               <TableRow key={group.id}>
                 <TableCell>{group.id}</TableCell>
                 <TableCell>{group.name}</TableCell>

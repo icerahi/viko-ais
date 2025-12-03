@@ -19,13 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
     Table,
     TableBody,
     TableCell,
@@ -33,9 +26,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { AdminService, Group } from "@/services/admin.service";
+import { AdminService } from "@/services/admin.service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,17 +39,11 @@ const userSchema = z.object({
   lastName: z.string().min(2),
 });
 
-export default function StudentsPage() {
-  const [students, setStudents] = useState<any[]>([]);
+export default function AdminsPage() {
+  const [admins, setAdmins] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
-  // Assignment Dialog State
-  const [isAssignOpen, setIsAssignOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [selectedGroupId, setSelectedGroupId] = useState<string>("");
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -68,15 +55,13 @@ export default function StudentsPage() {
 
   const fetchData = async () => {
     try {
-      const [studentsData, groupsData] = await Promise.all([
-        AdminService.getAllStudents(),
-        AdminService.getAllGroups(),
-      ]);
-      setStudents(studentsData);
-      setGroups(groupsData);
+      const users = await AdminService.getAllUsers();
+      // Filter for admins
+      const adminUsers = users.filter((u: any) => u.role === "ADMIN");
+      setAdmins(adminUsers);
     } catch (error) {
-      console.error("Failed to fetch data", error);
-      toast.error("Failed to fetch data");
+      console.error("Failed to fetch admins", error);
+      toast.error("Failed to fetch admins");
     } finally {
       setIsLoading(false);
     }
@@ -88,83 +73,61 @@ export default function StudentsPage() {
 
   const onSubmit = async (values: z.infer<typeof userSchema>) => {
     try {
-      await AdminService.createUser({ ...values, role: "STUDENT" });
+      await AdminService.createUser({ ...values, role: "ADMIN" });
       setIsCreateOpen(false);
       form.reset();
       fetchData();
-      toast.success("Student created successfully");
+      toast.success("Admin created successfully");
     } catch (error) {
-      console.error("Failed to create student", error);
-      toast.error("Failed to create student");
+      console.error("Failed to create admin", error);
+      toast.error("Failed to create admin");
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this student?")) {
+    if (confirm("Are you sure you want to delete this admin?")) {
       try {
         await AdminService.deleteUser(id);
         fetchData();
-        toast.success("Student deleted successfully");
+        toast.success("Admin deleted successfully");
       } catch (error) {
-        console.error("Failed to delete student", error);
-        toast.error("Failed to delete student");
+        console.error("Failed to delete admin", error);
+        toast.error("Failed to delete admin");
       }
     }
   };
 
-  const openAssignDialog = (student: any) => {
-      setSelectedStudent(student);
-      setSelectedGroupId(student.group?.id?.toString() || "");
-      setIsAssignOpen(true);
-  };
-
-  const handleAssignGroup = async () => {
-    if (!selectedStudent || !selectedGroupId) return;
-    
-    try {
-      await AdminService.assignStudentToGroup(selectedStudent.user.id, parseInt(selectedGroupId));
-      fetchData();
-      setIsAssignOpen(false);
-      toast.success("Group assigned successfully");
-    } catch (error) {
-      console.error("Failed to assign group", error);
-      toast.error("Failed to assign group");
-    }
-  };
-
-  // Auto-generate password from last name
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const lastName = e.target.value;
     form.setValue("lastName", lastName);
   };
 
-  // Auto-generate login from first name
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const firstName = e.target.value;
     form.setValue("firstName", firstName);
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.user.login.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAdmins = admins.filter((admin) =>
+    admin.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    admin.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    admin.login.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Students</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Administrators</h2>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Student
+              <Plus className="mr-2 h-4 w-4" /> Add Admin
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Student</DialogTitle>
+              <DialogTitle>Add New Admin</DialogTitle>
               <DialogDescription>
-                Create a new student account.
+                Create a new administrator account.
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -180,7 +143,7 @@ export default function StudentsPage() {
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="eg. Imran"
+                          placeholder="Eg. John"
                           {...field}
                           onChange={(e) => {
                             field.onChange(e);
@@ -200,7 +163,7 @@ export default function StudentsPage() {
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="eg. Hasan"
+                          placeholder="Eg. Doe"
                           {...field}
                           onChange={(e) => {
                             field.onChange(e);
@@ -214,7 +177,7 @@ export default function StudentsPage() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Create Student
+                  Create Admin
                 </Button>
               </form>
             </Form>
@@ -224,7 +187,7 @@ export default function StudentsPage() {
 
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search students..."
+          placeholder="Search admins..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
@@ -239,33 +202,21 @@ export default function StudentsPage() {
               <TableHead>First Name</TableHead>
               <TableHead>Last Name</TableHead>
               <TableHead>Login</TableHead>
-              <TableHead>Group</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredStudents.map((student) => (
-              <TableRow key={student.user.id}>
-                <TableCell>{student.user.id}</TableCell>
-                <TableCell>{student.user.firstName}</TableCell>
-                <TableCell>{student.user.lastName}</TableCell>
-                <TableCell>{student.user.login}</TableCell>
-                <TableCell>
-                  {student.group ? student.group.name : "No Group"}
-                </TableCell>
+            {filteredAdmins.map((admin) => (
+              <TableRow key={admin.id}>
+                <TableCell>{admin.id}</TableCell>
+                <TableCell>{admin.firstName}</TableCell>
+                <TableCell>{admin.lastName}</TableCell>
+                <TableCell>{admin.login}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => openAssignDialog(student)}
-                    title="Assign Group"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(student.userId)}
+                    onClick={() => handleDelete(admin.id)}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
@@ -275,41 +226,6 @@ export default function StudentsPage() {
           </TableBody>
         </Table>
       </div>
-
-      {/* Assign Group Dialog */}
-      <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Group</DialogTitle>
-            <DialogDescription>
-              Assign a group to {selectedStudent?.user.firstName} {selectedStudent?.user.lastName}.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Group</label>
-              <Select
-                value={selectedGroupId}
-                onValueChange={setSelectedGroupId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Group" />
-                </SelectTrigger>
-                <SelectContent>
-                  {groups.map((group) => (
-                    <SelectItem key={group.id} value={group.id.toString()}>
-                      {group.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button onClick={handleAssignGroup} className="w-full">
-              Save Assignment
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

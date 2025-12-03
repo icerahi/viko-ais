@@ -2,17 +2,7 @@ import { prisma } from "../../config/db";
 import { UserRole } from "../../generated/prisma/enums";
 import { User } from "../models/user.model";
 
-interface IUserRepository {
-  create(user: User): Promise<User | null>;
-  findById(id: number): Promise<User | null>;
-  findByLogin(login: string): Promise<any>;
-  findAll(filter: Record<string, any>): Promise<User[]>;
-  delete(id: number): Promise<void>;
-  //   update(id: number, student: Partial<Student>): Promise<Student>;
-  //   delete(id: number): Promise<void>;
-}
-
-export class UserRepository implements IUserRepository {
+export class UserRepository {
   private mapToUser(prismaUser: any): User {
     return new User(
       prismaUser.firstName,
@@ -83,8 +73,4 @@ export class UserRepository implements IUserRepository {
 
     return;
   }
-
-  //   async update(id: number, student: Partial<Student>) {
-  //     return await prisma.student.update({ where: { id }, data: { ...student } });
-  //   }
 }

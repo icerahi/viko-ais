@@ -2,29 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { AdminService } from "@/services/admin.service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +40,7 @@ const userSchema = z.object({
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
@@ -99,6 +100,12 @@ export default function TeachersPage() {
     const firstName = e.target.value;
     form.setValue("firstName", firstName);
   };
+
+  const filteredTeachers = teachers.filter((teacher) =>
+    teacher.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    teacher.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    teacher.login.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -172,6 +179,15 @@ export default function TeachersPage() {
         </Dialog>
       </div>
 
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Search teachers..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
+
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -184,7 +200,7 @@ export default function TeachersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {teachers.map((teacher) => (
+            {filteredTeachers.map((teacher) => (
               <TableRow key={teacher.id}>
                 <TableCell>{teacher.id}</TableCell>
                 <TableCell>{teacher.firstName}</TableCell>

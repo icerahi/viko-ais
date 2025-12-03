@@ -32,14 +32,11 @@
 
 ## 1. Introduction
 
-### 1.1 Objective
-The objective of this project is to create a prototype of an Academic Information System (AIS) that digitizes the process of recording and viewing student evaluations. The system is designed to handle distinct user roles (Administrator, Teacher, Student) with specific rights and access controls, simulating a real-world academic environment.
+### 1.1 Task Topic
+Create a prototype of an Academic Information System that would record student evaluations of taught subjects, taking into account different user roles and rights.
 
-### 1.2 Purpose
-The system serves as a centralized platform where:
-- **Administrators** manage the fundamental study data, including student groups, lecturers, students, and subjects.
-- **Lecturers (Teachers)** have the authority to register, edit, and view grades for the subjects they teach.
-- **Students** can securely view their own assessments and academic progress.
+### 1.2 Purpose of the System
+The system must allow the administrator to manage study data (groups, lecturers, students, subjects), the lecturer to register and edit grades, and the student to view their assessments.
 
 This project implements a three-tier architecture (UI, Logic, Data) and adheres to Object-Oriented Programming (OOP) principles to ensure scalability and maintainability.
 
@@ -293,6 +290,8 @@ To facilitate easy testing and usage:
 2.  Enter your generated **Login** and **Password**.
 3.  Click **"Sign in"**.
 
+![Login Screen Screenshot](screenshots/login_screen.png)
+
 #### **6.3.2 Administrator Role**
 *Access Level: Full System Control*
 -   **Dashboard**: Overview of total system counts.
@@ -300,9 +299,18 @@ To facilitate easy testing and usage:
     -   Go to "Students".
     -   **Create**: Click "Add Student", enter name.
     -   **Assign Group**: Click the "Edit" (Pencil) icon next to a student, select a Group from the dialog, and save.
+    -   **Search**: Use the search bar to find students by name or login.
+
+![Admin Dashboard Screenshot](screenshots/admin_dashboard.png)
+
+-   **Admin Management**:
+    -   Go to "Admins".
+    -   **Create**: Click "Add Admin", enter name.
+    -   **Search**: Use the search bar to find administrators.
 -   **Teacher Management**:
     -   Go to "Teachers".
     -   **Create**: Click "Add Teacher", enter name.
+    -   **Search**: Use the search bar to find teachers.
 -   **Group Management**:
     -   Go to "Groups".
     -   **Create**: Click "Add Group", enter name (e.g., "IT-2024").
@@ -322,11 +330,15 @@ To facilitate easy testing and usage:
     -   **Save**: Click the "Save" button. A success notification will appear.
     -   **Edit**: Simply change the value and click "Save" again.
 
+![Teacher Grading Screenshot](screenshots/teacher_grading.png)
+
 #### **6.3.4 Student Role**
 *Access Level: Read-Only*
 -   **My Grades**: The dashboard displays a table of your subjects.
 -   **View**: See the Subject Name, the Teacher, and your Grade.
 -   **Status**: If no grade is assigned, it displays "N/A".
+
+![Student Grades Screenshot](screenshots/student_grades.png)
 
 ---
 
