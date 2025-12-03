@@ -11,5 +11,6 @@ const authService = new AuthService(userRepo);
 const authController = new AuthController(authService);
 
 router.post("/login", validateRequest(authAPISchema), authController.login);
+router.post("/logout", authController.logout);
 
 export const authRoutes = router;

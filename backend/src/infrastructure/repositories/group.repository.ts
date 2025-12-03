@@ -22,7 +22,7 @@ export class GroupRepository implements IGroupRepository {
 
   async getAllGroups() {
     const result = await prisma.group.findMany({
-      include: { students: true, subjectGroup: true },
+      include: { students: true, subjectGroup: { include: { subject: true } } },
     });
     return result as unknown as Group[];
   }
@@ -57,6 +57,16 @@ export class GroupRepository implements IGroupRepository {
       },
     });
 
+    return result;
+  }
+
+  async removeSubject(groupId: number, subjectId: number) {
+    const result = await prisma.subjectGroup.deleteMany({
+      where: {
+        groupId: groupId,
+        subjectId: subjectId,
+      },
+    });
     return result;
   }
 }

@@ -52,4 +52,17 @@ export class GroupController {
       data: null,
     });
   });
+
+  removeSubject = catchAsync(async (req: Request, res: Response) => {
+    const groupId = Number(req.params.groupId);
+    const subjectId = req.body.subjectId;
+    await this.groupService.removeSubject(groupId, subjectId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: status.OK,
+      message: "Subject Removed successfully",
+      data: null,
+    });
+  });
 }

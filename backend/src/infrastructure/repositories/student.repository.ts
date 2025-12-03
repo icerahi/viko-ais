@@ -39,7 +39,13 @@ export class StudentRepository implements IStudentRepository {
       select: {
         group: true,
         user: {
-          select: { id: true, firstName: true, lastName: true, role: true },
+          select: {
+            id: true,
+            login: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+          },
         },
       },
     });

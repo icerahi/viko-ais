@@ -25,8 +25,6 @@ export class AuthController {
   });
 
   logout = catchAsync(async (req: Request, res: Response) => {
-    const result = await this.authService.login(req.body);
-
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
@@ -37,7 +35,7 @@ export class AuthController {
       success: true,
       statusCode: status.OK,
       message: "Logout successfully",
-      data: result,
+      data: null,
     });
   });
 }

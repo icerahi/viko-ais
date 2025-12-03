@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { UserRole } from "../../generated/prisma/enums";
-import { createGroupAPISchema } from "../../infrastructure/apiValidations/group.validation";
-import { assignGroupAPISchema } from "../../infrastructure/apiValidations/student.validation";
+import {
+  assignSubjectAPISchema,
+  createGroupAPISchema,
+} from "../../infrastructure/apiValidations/group.validation";
 import { GroupRepository } from "../../infrastructure/repositories/group.repository";
 import { Auth } from "../../middlewares/AuthMiddleware";
 import { validateRequest } from "../../middlewares/validateRequest";
@@ -25,8 +27,14 @@ router.delete("/:id", Auth(UserRole.ADMIN), groupController.delete);
 router.post(
   "/:groupId/assign-subject",
   Auth(UserRole.ADMIN),
-  validateRequest(assignGroupAPISchema),
+  validateRequest(assignSubjectAPISchema),
   groupController.assignSubject
+);
+
+router.delete(
+  "/:groupId/remove-subject",
+  Auth(UserRole.ADMIN),
+  groupController.removeSubject
 );
 
 export const groupRoutes = router;

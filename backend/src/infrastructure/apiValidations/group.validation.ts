@@ -5,6 +5,5 @@ export const createGroupAPISchema = z.object({
 });
 
 export const assignSubjectAPISchema = z.object({
-  groupId: z.number(),
   subjectId: z.number(),
 });

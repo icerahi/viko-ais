@@ -20,4 +20,8 @@ export class GroupService {
   async assignSubject(groupId:number, subjectId:number) {
     return await this.groupRepo.assignSubject(groupId,subjectId);
   }
+
+  async removeSubject(groupId: number, subjectId: number) {
+    return await this.groupRepo.removeSubject(groupId, subjectId);
+  }
 }

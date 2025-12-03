@@ -90,7 +90,15 @@ export class SubjectRepository implements ISubjectRepository {
 
     const subjects = await prisma.subjectGroup.findMany({
       where: { groupId: student?.groupId },
-      select: { subject: true },
+      select: {
+        subject: {
+          include: {
+            teacher: {
+              select: { user: { select: { firstName: true, lastName: true } } },
+            },
+          },
+        },
+      },
     });
 
     return subjects;

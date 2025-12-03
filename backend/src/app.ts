@@ -6,7 +6,15 @@ import globalErrorHandler from "./middlewares/globalErrorHandler";
 import notFound from "./middlewares/notFound";
 
 const app = express();
-app.use(cors());
+const allowedOrigins = ["http://localhost:3000"];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
 
