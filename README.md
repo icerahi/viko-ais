@@ -2,8 +2,6 @@
 
 A comprehensive Academic Information System prototype developed for Vilniaus Kolegija (VIKO). This system digitizes the academic process, allowing administrators to manage study data, teachers to grade students, and students to view their academic results.
 
-![VIKO AIS](https://en.viko.lt/wp-content/uploads/sites/9/2018/04/viko-logo-en.png)
-
 ## 🌐 Live Demo
 
 - **Frontend**: [https://viko-ais.vercel.app](https://viko-ais.vercel.app)
@@ -24,7 +22,6 @@ A comprehensive Academic Information System prototype developed for Vilniaus Kol
   - Read-only access ensures data integrity.
 - **Modern UI/UX**:
   - Built with **Next.js** and **Tailwind CSS**.
-  - Themed with official **VIKO brand colors**.
   - Responsive design with dialog-based forms for smooth interaction.
 - **Robust Backend**:
   - **Express.js** REST API.
@@ -96,22 +93,14 @@ A comprehensive Academic Information System prototype developed for Vilniaus Kol
 
 The system automatically generates credentials for users created by the Administrator:
 
-- **Login**: First Name
-- **Password**: Last Name
+- **Login**: super_admin
+- **Password**: admin
 
 **Default Admin Account (from seed):**
 
 - **Login**: `admin`
 - **Password**: `admin123` (or check `prisma/seed.ts` for specific seed data)
 
-## 📄 Documentation
-
-Detailed documentation including Class Diagrams, ERD, and User Manuals can be found in the [documentation.md](documentation.md) file.
-
 ## 👥 Authors
 
-- **[Your Name]** - _Initial Work_ - [Vilniaus Kolegija]
-
-## 📄 License
-
-This project is licensed under the MIT License.
+- **[MD IMRAN HASAN]**
