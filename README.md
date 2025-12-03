@@ -93,13 +93,10 @@ A comprehensive Academic Information System prototype developed for Vilniaus Kol
 
 The system automatically generates credentials for users created by the Administrator:
 
-- **Login**: super_admin
-- **Password**: admin
-
 **Default Admin Account (from seed):**
 
-- **Login**: `admin`
-- **Password**: `admin123` (or check `prisma/seed.ts` for specific seed data)
+- **Login**: `super_admin`
+- **Password**: `admin`
 
 ## 👥 Authors
 

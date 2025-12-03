@@ -2,36 +2,36 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { AdminService, Group } from "@/services/admin.service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,7 +52,7 @@ export default function StudentsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
+
   // Assignment Dialog State
   const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
@@ -113,16 +113,19 @@ export default function StudentsPage() {
   };
 
   const openAssignDialog = (student: any) => {
-      setSelectedStudent(student);
-      setSelectedGroupId(student.group?.id?.toString() || "");
-      setIsAssignOpen(true);
+    setSelectedStudent(student);
+    setSelectedGroupId(student.group?.id?.toString() || "");
+    setIsAssignOpen(true);
   };
 
   const handleAssignGroup = async () => {
     if (!selectedStudent || !selectedGroupId) return;
-    
+
     try {
-      await AdminService.assignStudentToGroup(selectedStudent.user.id, parseInt(selectedGroupId));
+      await AdminService.assignStudentToGroup(
+        selectedStudent.user.id,
+        parseInt(selectedGroupId)
+      );
       fetchData();
       setIsAssignOpen(false);
       toast.success("Group assigned successfully");
@@ -144,10 +147,11 @@ export default function StudentsPage() {
     form.setValue("firstName", firstName);
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.user.login.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = students.filter(
+    (student) =>
+      student.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.user.login.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -265,7 +269,7 @@ export default function StudentsPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleDelete(student.userId)}
+                    onClick={() => handleDelete(student.user.id)}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
@@ -282,12 +286,15 @@ export default function StudentsPage() {
           <DialogHeader>
             <DialogTitle>Assign Group</DialogTitle>
             <DialogDescription>
-              Assign a group to {selectedStudent?.user.firstName} {selectedStudent?.user.lastName}.
+              Assign a group to {selectedStudent?.user.firstName}{" "}
+              {selectedStudent?.user.lastName}.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Group</label>
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Group
+              </label>
               <Select
                 value={selectedGroupId}
                 onValueChange={setSelectedGroupId}

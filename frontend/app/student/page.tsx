@@ -56,7 +56,7 @@ export default function StudentDashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {subjects.map(({ subject }: any) => (
+            {subjects?.map(({ subject }: any) => (
               <TableRow key={subject.id}>
                 <TableCell className="font-medium">{subject.name}</TableCell>
                 <TableCell>
